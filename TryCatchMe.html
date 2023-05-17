@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Button Game</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #000000;
+    }
+    
+    #game {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    #button {
+      width: 150px;
+      height: 50px;
+      background-color: #ff0000;
+      color: #ffffff;
+      cursor: pointer;
+      position: absolute;
+      transition: top 0.5s, left 0.5s; /* Smooth transition for animation */
+    }
+    
+    #settings-button {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      padding: 10px;
+      background-color: #ffffff;
+      color: #000000;
+      cursor: pointer;
+      z-index: 9999; /* Ensures the button stays on top */
+    }
+    
+    #settings-popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 5px;
+      z-index: 9999; /* Ensures the popup stays on top */
+    }
+    
+    #current-level {
+      position: fixed;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #ffffff;
+      font-size: 24px;
+      font-weight: bold;
+      z-index: 9999; /* Ensures the element stays on top */
+    }
+  </style>
+  <script>
+    // Function to generate a random position within a specified range
+    function getRandomPosition(max) {
+      return Math.floor(Math.random() * max);
+    }
+    
+    // Function to move the button to a random position within the game area
+    function moveButton() {
+      var game = document.getElementById('game');
+      var button = document.getElementById('button');
+      var maxWidth = game.clientWidth - button.offsetWidth;
+      var maxHeight = game.clientHeight - button.offsetHeight;
+      var newX = getRandomPosition(maxWidth);
+      var newY = getRandomPosition(maxHeight);
+      
+      button.style.left = newX + 'px'; // Update button's horizontal position
+      button.style.top = newY + 'px'; // Update button's vertical position
+    }
+    
+    // Function to handle button click event
+    function handleClick() {
+      var button = document.getElementById('button');
+      button.onclick = null; // Disable button click after success
+      alert('Congratulations! Do you want to restart?');
+      location.reload(); // Restart the game by reloading the page
+    }
+    
+    var difficultyLevel = 1; // Default difficulty level
+    var intervalId; // Variable to store the interval ID
+    
+    // Function to show the settings popup
+    function showSettingsPopup() {
+      var popup = document.getElementById('settings-popup');
+      popup.style.display = 'block'; // Show the settings popup
+    }
+    
+    // Function to hide the settings popup
+    function hideSettingsPopup() {
+      var popup = document.getElementById('settings-popup');
+      popup.style.display = 'none'; // Hide the settings popup
+    }
+    
+    // Function to start the game with the selected difficulty level
+    function startGame() {
+      var popup = document.getElementById('settings-popup');
+      hideSettingsPopup(); // Hide the settings popup
+      var newDifficultyLevel = parseInt(document.getElementById('difficulty-bar').value);
+      
+      // Only start a new interval if the difficulty level has changed
+      if (newDifficultyLevel !== difficultyLevel) {
+        clearInterval(intervalId); // Clear the previous interval
+        difficultyLevel = newDifficultyLevel;
+        var animationSpeed = 1000 / difficultyLevel;
+        intervalId = setInterval(moveButton, animationSpeed); // Move the button with the adjusted animation speed
+        updateCurrentLevel(); // Update the displayed difficulty level
+      }
+    }
+    
+    // Function to update the displayed difficulty level
+    function updateCurrentLevel() {
+      var currentLevel = document.getElementById('current-level');
+      currentLevel.textContent = 'Level: ' + difficultyLevel; // Display the current difficulty level
+    }
+    
+    window.onload = function() {
+      var button = document.getElementById('button');
+      button.onclick = handleClick; // Set up button click event handler
+      intervalId = setInterval(moveButton, 500); // Move the button every 500 milliseconds
+      
+      var settingsButton = document.getElementById('settings-button');
+      settingsButton.onclick = showSettingsPopup; // Show the settings popup when the settings button is clicked
+      
+      // Set the initial value of the difficulty level bar
+      document.getElementById('difficulty-bar').value = difficultyLevel;
+      
+      updateCurrentLevel(); // Display the initial difficulty level
+    }
+  </script>
+</head>
+<body>
+  <div id="settings-button">Settings</div>
+  <div id="game">
+    <button id="button">TRY CLICK ME</button>
+  </div>
+  
+  <div id="settings-popup">
+    <label for="difficulty-bar">Difficulty Level (1-10):</label>
+    <input type="range" id="difficulty-bar" min="1" max="10" step="1">
+    <button onclick="startGame()">Save</button>
+  </div>
+  
+  <div id="current-level"></div>
+</body>
+</html>
