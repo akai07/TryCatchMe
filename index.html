@@ -63,6 +63,22 @@
       font-weight: bold;
       z-index: 9999; /* Ensures the element stays on top */
     }
+    
+    /* Responsive adjustments */
+    @media only screen and (max-width: 600px) {
+      #button {
+        width: 120px;
+        height: 40px;
+      }
+      
+      #settings-button {
+        font-size: 14px;
+      }
+      
+      #current-level {
+        font-size: 18px;
+      }
+    }
   </style>
   <script>
     // Function to generate a random position within a specified range
